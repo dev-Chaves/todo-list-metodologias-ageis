@@ -1,11 +1,17 @@
 package com.devchaves.toDoList.entitys;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Entity
 @Table(name = "tb_users")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class UsersEntity implements Serializable {
 
     @Id
