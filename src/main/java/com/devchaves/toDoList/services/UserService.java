@@ -5,15 +5,21 @@ import com.devchaves.toDoList.dtos.LoginDTO;
 import com.devchaves.toDoList.dtos.UserDTO;
 import com.devchaves.toDoList.entitys.UsersEntity;
 import com.devchaves.toDoList.repositories.UserRepository;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -63,4 +69,21 @@ public class UserService {
         return response;
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
+        UsersEntity user = userRepository.findByEmail(email)
+                .orElseThrow(()-> new UsernameNotFoundException("Usuário não encontrado."));
+
+        return new User(
+                user.getEmail(),
+                user.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+        );
+    }
+
+    public UsersEntity getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+    }
 }
