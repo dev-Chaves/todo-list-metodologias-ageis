@@ -1,6 +1,7 @@
 package com.devchaves.toDoList.services;
 
 import com.devchaves.toDoList.config.JwtConfig;
+import com.devchaves.toDoList.dtos.LoginDTO;
 import com.devchaves.toDoList.dtos.UserDTO;
 import com.devchaves.toDoList.entitys.UsersEntity;
 import com.devchaves.toDoList.repositories.UserRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -43,4 +45,22 @@ public class UserService {
 
         return response;
     }
+
+    public Map<String, String> authenticateUser(LoginDTO loginDTO){
+
+        Optional<UsersEntity> userOpt = userRepository.findByEmail(loginDTO.getEmail());
+
+        if (userOpt.isEmpty() || !passwordEncoder.matches(loginDTO.getPassword(), userOpt.get().getPassword())){
+            throw new RuntimeException("Senha ou Email inválido");
+        }
+
+        String token = jwtConfig.generateToken(loginDTO.getEmail());
+
+        Map<String, String> response = new HashMap<>();
+
+        response.put("token", token);
+
+        return response;
+    }
+
 }
