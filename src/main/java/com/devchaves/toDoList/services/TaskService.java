@@ -58,6 +58,35 @@ public class TaskService {
 
     }
 
+    public TaskEntity updateTask(Long taskId, TaskDTO taskDTO) {
+        UsersEntity currentUser = getCurrentUser();
+
+        TaskEntity task = taskRepository.findByTaskIdAndUserId(taskId, currentUser)
+                .orElseThrow(() -> new RuntimeException("Task not found or you don't have permission to update it"));
+
+        // Update task fields
+        if (taskDTO.getTitle() != null) {
+            task.setTitle(taskDTO.getTitle());
+        }
+        if (taskDTO.getText() != null) {
+            task.setText(taskDTO.getText());
+        }
+        if (taskDTO.getDescription() != null) {
+            task.setDescription(taskDTO.getDescription());
+        }
+        if (taskDTO.getStatus() != null) {
+            task.setStatus(taskDTO.getStatus());
+        }
+        if (taskDTO.getPriority() != null) {
+            task.setPriority(taskDTO.getPriority());
+        }
+        if (taskDTO.getDueDate() != null) {
+            task.setDueDate(taskDTO.getDueDate());
+        }
+
+        return taskRepository.save(task);
+    }
+
 
 
 }
