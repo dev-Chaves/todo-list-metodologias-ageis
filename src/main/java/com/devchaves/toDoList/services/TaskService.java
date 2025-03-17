@@ -61,7 +61,7 @@ public class TaskService {
     public TaskEntity updateTask(Long taskId, TaskDTO taskDTO) {
         UsersEntity currentUser = getCurrentUser();
 
-        TaskEntity task = taskRepository.findByTaskIdAndUserId(taskId, currentUser)
+        TaskEntity task = taskRepository.findByTaskByIdAndUserId(taskId, currentUser)
                 .orElseThrow(() -> new RuntimeException("Task not found or you don't have permission to update it"));
 
         // Update task fields
@@ -87,6 +87,13 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
+    public void deleteTask(Long taskId) {
+        UsersEntity currentUser = getCurrentUser();
 
+        TaskEntity task = taskRepository.findByTaskByIdAndUserId(taskId, currentUser)
+                .orElseThrow(() -> new RuntimeException("Task not found or you don't have permission to delete it"));
+
+        taskRepository.delete(task);
+    }
 
 }
