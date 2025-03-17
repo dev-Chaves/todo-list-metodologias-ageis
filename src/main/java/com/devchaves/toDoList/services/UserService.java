@@ -84,6 +84,6 @@ public class UserService implements UserDetailsService {
 
     public UsersEntity getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o email " + email));
     }
 }

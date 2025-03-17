@@ -62,7 +62,7 @@ public class TaskService {
         UsersEntity currentUser = getCurrentUser();
 
         TaskEntity task = taskRepository.findByTaskByIdAndUserId(taskId, currentUser)
-                .orElseThrow(() -> new RuntimeException("Task not found or you don't have permission to update it"));
+                .orElseThrow(() -> new RuntimeException("A tarefa não foi encontrada e você não tem permissão para altera-lá!!!"));
 
         // Update task fields
         if (taskDTO.getTitle() != null) {
@@ -91,7 +91,7 @@ public class TaskService {
         UsersEntity currentUser = getCurrentUser();
 
         TaskEntity task = taskRepository.findByTaskByIdAndUserId(taskId, currentUser)
-                .orElseThrow(() -> new RuntimeException("Task not found or you don't have permission to delete it"));
+                .orElseThrow(() -> new RuntimeException("A tarefa não foi encontrada e você não tem permissão para delete-lá!!!"));
 
         taskRepository.delete(task);
     }
