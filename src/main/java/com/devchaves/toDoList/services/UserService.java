@@ -42,8 +42,5 @@ public class UserService {
         response.put("userId", savedUser.getUserId());
 
         return response;
-
     }
-
-
 }
