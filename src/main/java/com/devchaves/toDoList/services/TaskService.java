@@ -64,7 +64,6 @@ public class TaskService {
         TaskEntity task = taskRepository.findByTaskByIdAndUserId(taskId, currentUser)
                 .orElseThrow(() -> new RuntimeException("A tarefa não foi encontrada e você não tem permissão para altera-lá!!!"));
 
-        // Update task fields
         if (taskDTO.getTitle() != null) {
             task.setTitle(taskDTO.getTitle());
         }
