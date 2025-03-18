@@ -32,4 +32,5 @@ public class AuthControllers {
     public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginDTO loginDTO){
         return ResponseEntity.ok().body(userService.authenticateUser(loginDTO));
     }
+
 }
