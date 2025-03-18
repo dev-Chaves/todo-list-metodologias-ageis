@@ -1,6 +1,6 @@
 package com.devchaves.toDoList.config;
 
-import com.devchaves.toDoList.security.JwtAuthenticationFilter;
+import com.devchaves.toDoList.config.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

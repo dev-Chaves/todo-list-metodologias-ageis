@@ -1,4 +1,4 @@
-package com.devchaves.toDoList.security;
+package com.devchaves.toDoList.config.security;
 
 import com.devchaves.toDoList.config.JwtConfig;
 import com.devchaves.toDoList.services.UserService;
