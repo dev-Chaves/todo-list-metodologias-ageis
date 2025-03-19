@@ -1,6 +1,7 @@
 package com.devchaves.toDoList.controllers;
 
 import com.devchaves.toDoList.dtos.LoginDTO;
+import com.devchaves.toDoList.dtos.LoginResponse;
 import com.devchaves.toDoList.dtos.UserDTO;
 import com.devchaves.toDoList.services.UserService;
 import jakarta.validation.Valid;
@@ -29,8 +30,8 @@ public class AuthControllers {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginDTO loginDTO){
-        return ResponseEntity.ok().body(userService.authenticateUser(loginDTO));
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginDTO loginDTO){
+        return ResponseEntity.ok(userService.authenticateUser(loginDTO));
     }
 
 }

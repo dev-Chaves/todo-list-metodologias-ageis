@@ -2,17 +2,25 @@ package com.devchaves.toDoList.services;
 
 import com.devchaves.toDoList.config.JwtConfig;
 import com.devchaves.toDoList.dtos.LoginDTO;
+import com.devchaves.toDoList.dtos.LoginResponse;
 import com.devchaves.toDoList.dtos.UserDTO;
 import com.devchaves.toDoList.entitys.UsersEntity;
 import com.devchaves.toDoList.repositories.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,18 +31,19 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtConfig jwtConfig;
+    private final JwtEncoder jwtEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtConfig jwtConfig) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtConfig jwtConfig, JwtEncoder jwtEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtConfig = jwtConfig;
+
+        this.jwtEncoder = jwtEncoder;
     }
 
     public Map<String, Object> registerUser(UserDTO userDTO){
 
         if(userRepository.findByEmail(userDTO.getEmail()).isPresent()){
-            throw new RuntimeException("Email já está em uso!");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
         UsersEntity user = new UsersEntity();
@@ -52,21 +61,27 @@ public class UserService implements UserDetailsService {
         return response;
     }
 
-    public Map<String, String> authenticateUser(LoginDTO loginDTO){
+    public LoginResponse authenticateUser(LoginDTO loginDTO){
 
         Optional<UsersEntity> userOpt = userRepository.findByEmail(loginDTO.getEmail());
 
         if (userOpt.isEmpty() || !passwordEncoder.matches(loginDTO.getPassword(), userOpt.get().getPassword())){
-            throw new RuntimeException("Senha ou Email inválido");
+            throw new BadCredentialsException("Senha ou Email inválido");
         }
 
-        String token = jwtConfig.generateToken(loginDTO.getEmail());
+        var now = Instant.now();
+        var expiresIn = 864000L;
 
-        Map<String, String> response = new HashMap<>();
+        var clains = JwtClaimsSet.builder()
+                .issuer("myBackend")
+                .subject(userOpt.get().getUserId().toString())
+                .expiresAt(now.plusSeconds(expiresIn))
+                .issuedAt(now)
+                .build();
 
-        response.put("token", token);
+        var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(clains)).getTokenValue();
 
-        return response;
+        return new LoginResponse(jwtValue, expiresIn);
     }
 
     @Override

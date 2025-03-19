@@ -20,3 +20,6 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     operationsSorter: method
+
+jwt:
+  private-key: classpath:keys/private.pem
