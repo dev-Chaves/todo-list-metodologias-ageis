@@ -22,4 +22,5 @@ springdoc:
     operationsSorter: method
 
 jwt:
-  private-key: classpath:keys/private.pem
+  private-key: "classpath:keys/private.pem"
+  public-key: "classpath:keys/public.pem"

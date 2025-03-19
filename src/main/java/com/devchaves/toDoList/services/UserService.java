@@ -1,6 +1,5 @@
 package com.devchaves.toDoList.services;
 
-import com.devchaves.toDoList.config.JwtConfig;
 import com.devchaves.toDoList.dtos.LoginDTO;
 import com.devchaves.toDoList.dtos.LoginResponse;
 import com.devchaves.toDoList.dtos.UserDTO;
@@ -33,10 +32,9 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final JwtEncoder jwtEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtConfig jwtConfig, JwtEncoder jwtEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtEncoder jwtEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-
         this.jwtEncoder = jwtEncoder;
     }
 
